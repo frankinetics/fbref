@@ -534,4 +534,264 @@ def compare_players_percentile(x,y):
     
     plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
     
+### Compare defensive stats for any two players
+
+
+def compare_defensive_stats (x,y):
+    
+    warnings.filterwarnings("ignore")
+    
+    url_x = x
+    url_y = y
+    
+    page_x =requests.get(url_x)
+    page_y =requests.get(url_y)
+    
+    soup_x = BeautifulSoup(page_x.content, 'html.parser')
+    soup_y = BeautifulSoup(page_y.content, 'html.parser')
+    
+    name_x = [element.text for element in soup_x.find_all("span")]
+    name_y = [element.text for element in soup_y.find_all("span")]
+    
+    name_x = name_x[7]
+    name_y = name_y[7]
+    
+    metric_names_x = []
+    metric_names_y = []
+    
+    metric_values_x = []
+    metric_values_y = []
+    
+    remove_content = ["'", "[", "]", ",", "%"]
+    
+    for row in soup_x.findAll('table')[0].tbody.findAll('tr'):
+        first_column_x = row.findAll('th')[0].contents
+        metric_names_x.append(first_column_x)
+        
+    for row in soup_y.findAll('table')[0].tbody.findAll('tr'):
+        first_column_y = row.findAll('th')[0].contents
+        metric_names_y.append(first_column_y)
+        
+    for row in soup_x.findAll('table')[0].tbody.findAll('tr'):
+        first_column_x = row.findAll('td')[1].contents
+        metric_values_x.append(first_column_x)
+        
+    for row in soup_y.findAll('table')[0].tbody.findAll('tr'):
+        first_column_y = row.findAll('td')[1].contents
+        metric_values_y.append(first_column_y)
+        
+    clean_left_x = []
+    splitat_r = 65
+    splitat_l = 67
+
+    for item in metric_values_x:
+        item = str(item).strip('[]')
+        left, right = item[:splitat_l], item[splitat_r:]
+        clean_left_x.append(left)
+
+    clean_overall_x = []
+    
+    for item in clean_left_x:
+        item = str(item).strip('[]')
+        left, right = item[:splitat_l], item[splitat_r:]
+        clean_overall_x.append(right)
+    
+    clean_x = []
+    
+    for item in clean_overall_x:
+        item = item.replace("<","")
+        clean_x.append(item)
+        
+    clean_left_y = []
+    splitat_r = 65
+    splitat_l = 67
+
+    for item in metric_values_y:
+        item = str(item).strip('[]')
+        left, right = item[:splitat_l], item[splitat_r:]
+        clean_left_y.append(left)
+
+    clean_overall_y = []
+    
+    for item in clean_left_y:
+        item = str(item).strip('[]')
+        left, right = item[:splitat_l], item[splitat_r:]
+        clean_overall_y.append(right)
+    
+    clean_y = []
+    
+    for item in clean_overall_y:
+        item = item.replace("<","")
+        clean_y.append(item)
+        
+    df_player_1 = pd.DataFrame()
+    
+    df_player_2 = pd.DataFrame()
+    
+    df_player_1['Name'] = name_x[0]
+    df_player_1[metric_names_x[0]] = []
+    df_player_1[metric_names_x[1]] = []
+    df_player_1[metric_names_x[2]] = []
+    df_player_1[metric_names_x[3]] = []
+    df_player_1[metric_names_x[4]] = []
+    df_player_1[metric_names_x[5]] = []
+    df_player_1[metric_names_x[6]] = []
+    df_player_1[metric_names_x[8]] = []
+    df_player_1[metric_names_x[9]] = []
+    df_player_1[metric_names_x[10]] = []
+    df_player_1[metric_names_x[11]] = []
+    df_player_1[metric_names_x[12]] = []
+    df_player_1[metric_names_x[13]] = []
+    df_player_1[metric_names_x[14]] = []
+    df_player_1[metric_names_x[16]] = []
+    df_player_1[metric_names_x[17]] = []
+    df_player_1[metric_names_x[18]] = []
+    df_player_1[metric_names_x[19]] = []
+    df_player_1[metric_names_x[20]] = []
+    df_player_1[metric_names_x[21]] = []
+    
+    df_player_2['Name'] = name_x[0]
+    df_player_2[metric_names_y[0]] = []
+    df_player_2[metric_names_y[1]] = []
+    df_player_2[metric_names_y[2]] = []
+    df_player_2[metric_names_y[3]] = []
+    df_player_2[metric_names_y[4]] = []
+    df_player_2[metric_names_y[5]] = []
+    df_player_2[metric_names_y[6]] = []
+    df_player_2[metric_names_y[8]] = []
+    df_player_2[metric_names_y[9]] = []
+    df_player_2[metric_names_y[10]] = []
+    df_player_2[metric_names_y[11]] = []
+    df_player_2[metric_names_y[12]] = []
+    df_player_2[metric_names_y[13]] = []
+    df_player_2[metric_names_y[14]] = []
+    df_player_2[metric_names_y[16]] = []
+    df_player_2[metric_names_y[17]] = []
+    df_player_2[metric_names_y[18]] = []
+    df_player_2[metric_names_y[19]] = []
+    df_player_2[metric_names_y[20]] = []
+    df_player_2[metric_names_y[21]] = []
+    
+    df_player_1 = kb.clean_column_names(df_player_1)
+    df_player_2 = kb.clean_column_names(df_player_2)
+        
+    name_x = name_x
+    non_penalty_goals_x = (clean_x[0])
+    npx_g_x = clean_x[1]
+    shots_total_x = clean_x[2]
+    assists_x = clean_x[3]
+    x_a_x = clean_x[4]
+    npx_g_plus_x_a_x = clean_x[5] 
+    shot_creating_actions_x = clean_x[6] 
+    passes_attempted_x = clean_x[8] 
+    pass_completion_percent_x = clean_x[9] 
+    progressive_passes_x = clean_x[10] 
+    progressive_carries_x = clean_x[11] 
+    dribbles_completed_x = clean_x[12] 
+    touches_att_pen_x = clean_x[13]
+    progressive_passes_rec_x = clean_x[14] 
+    pressures_x = clean_x[16] 
+    tackles_x = clean_x[17] 
+    interceptions_x = clean_x[18] 
+    blocks_x = clean_x[19]
+    clearances_x = clean_x[20]
+    aerials_won_x = clean_x[21]
+    
+    df_player_1.loc[0] = [name_x, non_penalty_goals_x, npx_g_x, shots_total_x, assists_x, x_a_x, npx_g_plus_x_a_x, shot_creating_actions_x, passes_attempted_x, pass_completion_percent_x,
+                       progressive_passes_x, progressive_carries_x, dribbles_completed_x, touches_att_pen_x, progressive_passes_rec_x, pressures_x, tackles_x, interceptions_x, blocks_x,
+                       clearances_x, aerials_won_x]
+    
+    name_y = name_y
+    non_penalty_goals_y = (clean_y[0])
+    npx_g_y = clean_y[1]
+    shots_total_y = clean_y[2]
+    assists_y = clean_y[3]
+    x_a_y = clean_y[4]
+    npx_g_plus_x_a_y = clean_y[5] 
+    shot_creating_actions_y = clean_y[6] 
+    passes_attempted_y = clean_y[8] 
+    pass_completion_percent_y = clean_y[9] 
+    progressive_passes_y = clean_y[10] 
+    progressive_carries_y = clean_y[11] 
+    dribbles_completed_y = clean_y[12] 
+    touches_att_pen_y = clean_y[13]
+    progressive_passes_rec_y = clean_y[14] 
+    pressures_y = clean_y[16] 
+    tackles_y = clean_y[17] 
+    interceptions_y = clean_y[18] 
+    blocks_y = clean_y[19]
+    clearances_y = clean_y[20]
+    aerials_won_y = clean_y[21]
+    
+    df_player_2.loc[0] = [name_y, non_penalty_goals_y, npx_g_y, shots_total_y, assists_y, x_a_y, npx_g_plus_x_a_y, shot_creating_actions_y, passes_attempted_y, pass_completion_percent_y,
+                       progressive_passes_y, progressive_carries_y, dribbles_completed_y, touches_att_pen_y, progressive_passes_rec_y, pressures_y, tackles_y, interceptions_y, blocks_y,
+                       clearances_y, aerials_won_y]
+    
+    df_player_comp = pd.concat([df_player_1, df_player_2])
+    
+    df_player_defensive_comp = df_player_comp[['name','pressures', 'tackles', 'interceptions', 'blocks',
+                       'clearances', 'aerials_won']]
+    
+    df_player_defensive_comp_plot = pd.DataFrame(index=np.arange(14), columns=np.arange(2))
+    
+    df_player_defensive_comp_plot.rename(columns={df_player_defensive_comp_plot.columns[0]: "Percentile" }, inplace = True)
+    
+    df_player_defensive_comp_plot.rename(columns={df_player_defensive_comp_plot.columns[1]: "Metric" }, inplace = True)
+    
+    player_name = [(df_player_defensive_comp_plot.index >= 0) & (df_player_defensive_comp_plot.index < 7),
+         (df_player_defensive_comp_plot.index >= 7)]
+
+    player_name_paste = [name_x, name_y]
+
+    df_player_defensive_comp_plot['Player'] = np.select(player_name, player_name_paste)
+    
+    
+    average_x = [int(pressures_x), int(tackles_x), int(interceptions_x), int(blocks_x),
+                       int(clearances_x), int(aerials_won_x)]
+    average_x = np.mean(average_x)
+    
+    
+    average_y = [int(pressures_y), int(tackles_y), int(interceptions_y), int(blocks_y),
+                       int(clearances_y), int(aerials_won_y)]
+    average_y = np.mean(average_y)
+    
+    df_player_defensive_comp_plot.at[0, 'Metric'] = 'Pressures'
+    df_player_defensive_comp_plot.at[1, 'Metric'] = 'Tackles'
+    df_player_defensive_comp_plot.at[2, 'Metric'] = 'Interceptions'
+    df_player_defensive_comp_plot.at[3, 'Metric'] = 'Blocks'
+    df_player_defensive_comp_plot.at[4, 'Metric'] = 'Clearances'
+    df_player_defensive_comp_plot.at[5, 'Metric'] = 'Ariels Won'
+    df_player_defensive_comp_plot.at[6, 'Metric'] = 'Average'
+    df_player_defensive_comp_plot.at[7, 'Metric'] = 'Pressures'
+    df_player_defensive_comp_plot.at[8, 'Metric'] = 'Tackles'
+    df_player_defensive_comp_plot.at[9, 'Metric'] = 'Interceptions'
+    df_player_defensive_comp_plot.at[10, 'Metric'] = 'Blocks'
+    df_player_defensive_comp_plot.at[11, 'Metric'] = 'Clearances'
+    df_player_defensive_comp_plot.at[12, 'Metric'] = 'Ariels Won'
+    df_player_defensive_comp_plot.at[13, 'Metric'] = 'Average'
+    
+    df_player_defensive_comp_plot.at[0, 'Percentile'] = int(pressures_x)
+    df_player_defensive_comp_plot.at[1, 'Percentile'] = int(tackles_x)
+    df_player_defensive_comp_plot.at[2, 'Percentile'] = int(interceptions_x)
+    df_player_defensive_comp_plot.at[3, 'Percentile'] = int(blocks_x)
+    df_player_defensive_comp_plot.at[4, 'Percentile'] = int(clearances_x)
+    df_player_defensive_comp_plot.at[5, 'Percentile'] = int(aerials_won_x)
+    df_player_defensive_comp_plot.at[6, 'Percentile'] = average_x
+    df_player_defensive_comp_plot.at[7, 'Percentile'] = int(pressures_y)
+    df_player_defensive_comp_plot.at[8, 'Percentile'] = int(tackles_y)
+    df_player_defensive_comp_plot.at[9, 'Percentile'] = int(interceptions_y)
+    df_player_defensive_comp_plot.at[10, 'Percentile'] = int(blocks_y)
+    df_player_defensive_comp_plot.at[11, 'Percentile'] = int(clearances_y)
+    df_player_defensive_comp_plot.at[12, 'Percentile'] = int(aerials_won_y)
+    df_player_defensive_comp_plot.at[13, 'Percentile'] = average_y
+    
+    df_player_defensive_comp_plot = df_player_defensive_comp_plot[['Player', 'Metric', 'Percentile']]
+    
+    sb.catplot(x = 'Player', y = 'Percentile', data = df_player_defensive_comp_plot, hue='Metric', s = 14, height=7, aspect=1)
+    
+    sb.set_style("white")
+    
+    print(name_x,"is in the following percentile for defensive performance:",average_x)
+    print(name_y, "is in the following percentile for defensive performance:",average_y)
+    
     
