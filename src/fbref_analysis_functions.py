@@ -537,7 +537,7 @@ def compare_players_percentile(x,y):
 ### Compare defensive stats for any two players
 
 
-def compare_defensive_stats (x,y):
+def compare_defensive_stats(x,y):
     
     warnings.filterwarnings("ignore")
     
@@ -732,14 +732,14 @@ def compare_defensive_stats (x,y):
     df_player_defensive_comp = df_player_comp[['name','pressures', 'tackles', 'interceptions', 'blocks',
                        'clearances', 'aerials_won']]
     
-    df_player_defensive_comp_plot = pd.DataFrame(index=np.arange(14), columns=np.arange(2))
+    df_player_defensive_comp_plot = pd.DataFrame(index=np.arange(12), columns=np.arange(2))
     
     df_player_defensive_comp_plot.rename(columns={df_player_defensive_comp_plot.columns[0]: "Percentile" }, inplace = True)
     
     df_player_defensive_comp_plot.rename(columns={df_player_defensive_comp_plot.columns[1]: "Metric" }, inplace = True)
     
-    player_name = [(df_player_defensive_comp_plot.index >= 0) & (df_player_defensive_comp_plot.index < 7),
-         (df_player_defensive_comp_plot.index >= 7)]
+    player_name = [(df_player_defensive_comp_plot.index >= 0) & (df_player_defensive_comp_plot.index < 6),
+         (df_player_defensive_comp_plot.index >= 6)]
 
     player_name_paste = [name_x, name_y]
 
@@ -761,14 +761,13 @@ def compare_defensive_stats (x,y):
     df_player_defensive_comp_plot.at[3, 'Metric'] = 'Blocks'
     df_player_defensive_comp_plot.at[4, 'Metric'] = 'Clearances'
     df_player_defensive_comp_plot.at[5, 'Metric'] = 'Ariels Won'
-    df_player_defensive_comp_plot.at[6, 'Metric'] = 'Average'
     df_player_defensive_comp_plot.at[7, 'Metric'] = 'Pressures'
     df_player_defensive_comp_plot.at[8, 'Metric'] = 'Tackles'
     df_player_defensive_comp_plot.at[9, 'Metric'] = 'Interceptions'
     df_player_defensive_comp_plot.at[10, 'Metric'] = 'Blocks'
     df_player_defensive_comp_plot.at[11, 'Metric'] = 'Clearances'
     df_player_defensive_comp_plot.at[12, 'Metric'] = 'Ariels Won'
-    df_player_defensive_comp_plot.at[13, 'Metric'] = 'Average'
+
     
     df_player_defensive_comp_plot.at[0, 'Percentile'] = int(pressures_x)
     df_player_defensive_comp_plot.at[1, 'Percentile'] = int(tackles_x)
@@ -776,29 +775,41 @@ def compare_defensive_stats (x,y):
     df_player_defensive_comp_plot.at[3, 'Percentile'] = int(blocks_x)
     df_player_defensive_comp_plot.at[4, 'Percentile'] = int(clearances_x)
     df_player_defensive_comp_plot.at[5, 'Percentile'] = int(aerials_won_x)
-    df_player_defensive_comp_plot.at[6, 'Percentile'] = average_x
     df_player_defensive_comp_plot.at[7, 'Percentile'] = int(pressures_y)
     df_player_defensive_comp_plot.at[8, 'Percentile'] = int(tackles_y)
     df_player_defensive_comp_plot.at[9, 'Percentile'] = int(interceptions_y)
     df_player_defensive_comp_plot.at[10, 'Percentile'] = int(blocks_y)
     df_player_defensive_comp_plot.at[11, 'Percentile'] = int(clearances_y)
     df_player_defensive_comp_plot.at[12, 'Percentile'] = int(aerials_won_y)
-    df_player_defensive_comp_plot.at[13, 'Percentile'] = average_y
     
     df_player_defensive_comp_plot = df_player_defensive_comp_plot[['Player', 'Metric', 'Percentile']]
     
-    sb.catplot(x = 'Player', y = 'Percentile', data = df_player_defensive_comp_plot, hue='Metric', s = 14, height=7, aspect=1)
+    ax = sb.catplot(x = 'Player', y = 'Percentile', data = df_player_defensive_comp_plot, hue='Metric', s = 16, height=7, aspect=1)
     
-    sb.set_style("white")
+    ax.set(ylim=(0, 100))
+
+    la = {0: [average_x, name_x]}
+    la_2 = {0: [average_y, name_y]}
+
+    axes = ax.axes.flatten()
+
+    for i, ax in enumerate(axes):
+        ax.axhline(la[i][0], ls='--', c='green')
+        
+    for i, ax in enumerate(axes):
+        ax.axhline(la_2[i][0], ls='--', c='purple')
+        
+    ax.text(0, average_x, name_x, transform=ax.transData)  
+    ax.text(1, average_y, name_y, transform=ax.transData)  
     
-    print(name_x,"is in the following percentile for defensive performance:",average_x)
-    print(name_y, "is in the following percentile for defensive performance:",average_y)
+    print(name_x,"is in the following percentile for defensive performance:",round(average_x,2))
+    print(name_y, "is in the following percentile for defensive performance:",round(average_y,2))
     
     
 ### Compare offensive stats for any two players
 
 
-def compare_offensive_stats (x,y):
+def compare_offensive_stats(x,y):
     
     warnings.filterwarnings("ignore")
     
@@ -993,14 +1004,14 @@ def compare_offensive_stats (x,y):
     df_player_offensive_comp = df_player_comp[['name', 'non_penalty_goals', 'npx_g', 'shots_total', 'assists', 'x_a', 'npx_g_plus_x_a', 'shot_creating_actions', 'pass_completion_percent',
                                               'progressive_passes', 'progressive_carries', 'dribbles_completed', 'touches_att_pen']]
     
-    df_player_offensive_comp_plot = pd.DataFrame(index=np.arange(26), columns=np.arange(2))
+    df_player_offensive_comp_plot = pd.DataFrame(index=np.arange(24), columns=np.arange(2))
     
     df_player_offensive_comp_plot.rename(columns={df_player_offensive_comp_plot.columns[0]: "Percentile" }, inplace = True)
     
     df_player_offensive_comp_plot.rename(columns={df_player_offensive_comp_plot.columns[1]: "Metric" }, inplace = True)
     
-    player_name = [(df_player_offensive_comp_plot.index >= 0) & (df_player_offensive_comp_plot.index < 13),
-         (df_player_offensive_comp_plot.index >= 13)]
+    player_name = [(df_player_offensive_comp_plot.index >= 0) & (df_player_offensive_comp_plot.index < 12),
+         (df_player_offensive_comp_plot.index >= 12)]
 
     player_name_paste = [name_x, name_y]
 
@@ -1030,20 +1041,18 @@ def compare_offensive_stats (x,y):
     df_player_offensive_comp_plot.at[9, 'Metric'] = 'Progressive_carries'
     df_player_offensive_comp_plot.at[10, 'Metric'] = 'Dribbles_completed'
     df_player_offensive_comp_plot.at[11, 'Metric'] = 'Touches_att_pen'
-    df_player_offensive_comp_plot.at[12, 'Metric'] = 'Average'
-    df_player_offensive_comp_plot.at[13, 'Metric'] = 'Non_penalty_goals_'
-    df_player_offensive_comp_plot.at[14, 'Metric'] = 'Npx_g'
-    df_player_offensive_comp_plot.at[15, 'Metric'] = 'Shots_total'
-    df_player_offensive_comp_plot.at[16, 'Metric'] = 'Assists'
-    df_player_offensive_comp_plot.at[17, 'Metric'] = 'X_a'
-    df_player_offensive_comp_plot.at[18, 'Metric'] = 'Npx_g_plus_x_a'
-    df_player_offensive_comp_plot.at[19, 'Metric'] = 'Shot_creating_actions'
-    df_player_offensive_comp_plot.at[20, 'Metric'] = 'Pass_completion_percent'
-    df_player_offensive_comp_plot.at[21, 'Metric'] = 'Progressive_passes'
-    df_player_offensive_comp_plot.at[22, 'Metric'] = 'Progressive_carries'
-    df_player_offensive_comp_plot.at[23, 'Metric'] = 'Dribbles_completed'
-    df_player_offensive_comp_plot.at[24, 'Metric'] = 'Touches_att_pen'
-    df_player_offensive_comp_plot.at[25, 'Metric'] = 'Average'
+    df_player_offensive_comp_plot.at[12, 'Metric'] = 'Non_penalty_goals'
+    df_player_offensive_comp_plot.at[13, 'Metric'] = 'Npx_g'
+    df_player_offensive_comp_plot.at[14, 'Metric'] = 'Shots_total'
+    df_player_offensive_comp_plot.at[15, 'Metric'] = 'Assists'
+    df_player_offensive_comp_plot.at[16, 'Metric'] = 'X_a'
+    df_player_offensive_comp_plot.at[17, 'Metric'] = 'Npx_g_plus_x_a'
+    df_player_offensive_comp_plot.at[18, 'Metric'] = 'Shot_creating_actions'
+    df_player_offensive_comp_plot.at[19, 'Metric'] = 'Pass_completion_percent'
+    df_player_offensive_comp_plot.at[20, 'Metric'] = 'Progressive_passes'
+    df_player_offensive_comp_plot.at[21, 'Metric'] = 'Progressive_carries'
+    df_player_offensive_comp_plot.at[22, 'Metric'] = 'Dribbles_completed'
+    df_player_offensive_comp_plot.at[23, 'Metric'] = 'Touches_att_pen'
     
     
     df_player_offensive_comp_plot.at[0, 'Percentile'] = int(non_penalty_goals_x)
@@ -1058,28 +1067,38 @@ def compare_offensive_stats (x,y):
     df_player_offensive_comp_plot.at[9, 'Percentile'] = int(progressive_carries_x)
     df_player_offensive_comp_plot.at[10, 'Percentile'] =  int(dribbles_completed_x)
     df_player_offensive_comp_plot.at[11, 'Percentile'] = int(touches_att_pen_x)
-    df_player_offensive_comp_plot.at[12, 'Percentile'] =  average_x
-    df_player_offensive_comp_plot.at[13, 'Percentile'] = int(non_penalty_goals_y)
-    df_player_offensive_comp_plot.at[14, 'Percentile'] = int(npx_g_y)
-    df_player_offensive_comp_plot.at[15, 'Percentile'] = int(shots_total_y)
-    df_player_offensive_comp_plot.at[16, 'Percentile'] = int(assists_y)
-    df_player_offensive_comp_plot.at[17, 'Percentile'] =  int(x_a_y)
-    df_player_offensive_comp_plot.at[18, 'Percentile'] = int(npx_g_plus_x_a_y)
-    df_player_offensive_comp_plot.at[19, 'Percentile'] = int(shot_creating_actions_y)
-    df_player_offensive_comp_plot.at[20, 'Percentile'] = int(pass_completion_percent_y)
-    df_player_offensive_comp_plot.at[21, 'Percentile'] = int(progressive_passes_y)
-    df_player_offensive_comp_plot.at[22, 'Percentile'] = int(progressive_carries_y)
-    df_player_offensive_comp_plot.at[23, 'Percentile'] =  int(dribbles_completed_y)
-    df_player_offensive_comp_plot.at[24, 'Percentile'] = int(touches_att_pen_y)
-    df_player_offensive_comp_plot.at[25, 'Percentile'] =  average_y
-    
+    df_player_offensive_comp_plot.at[12, 'Percentile'] = int(non_penalty_goals_y)
+    df_player_offensive_comp_plot.at[13, 'Percentile'] = int(npx_g_y)
+    df_player_offensive_comp_plot.at[14, 'Percentile'] = int(shots_total_y)
+    df_player_offensive_comp_plot.at[15, 'Percentile'] = int(assists_y)
+    df_player_offensive_comp_plot.at[16, 'Percentile'] =  int(x_a_y)
+    df_player_offensive_comp_plot.at[17, 'Percentile'] = int(npx_g_plus_x_a_y)
+    df_player_offensive_comp_plot.at[18, 'Percentile'] = int(shot_creating_actions_y)
+    df_player_offensive_comp_plot.at[19, 'Percentile'] = int(pass_completion_percent_y)
+    df_player_offensive_comp_plot.at[20, 'Percentile'] = int(progressive_passes_y)
+    df_player_offensive_comp_plot.at[21, 'Percentile'] = int(progressive_carries_y)
+    df_player_offensive_comp_plot.at[22, 'Percentile'] =  int(dribbles_completed_y)
+    df_player_offensive_comp_plot.at[23, 'Percentile'] = int(touches_att_pen_y)
     
     df_player_offensive_comp_plot = df_player_offensive_comp_plot[['Player', 'Metric', 'Percentile']]
     
-    sb.catplot(x = 'Player', y = 'Percentile', data = df_player_offensive_comp_plot, hue='Metric', s = 14, height=7, aspect=1)
+    ax = sb.catplot(x = 'Player', y = 'Percentile', data = df_player_offensive_comp_plot, hue='Metric', s = 16, height=7, aspect=1)
     
-    sb.set_style("white")
+    ax.set(ylim=(0, 100))
+
+    la = {0: [average_x, name_x]}
+    la_2 = {0: [average_y, name_y]}
+
+    axes = ax.axes.flatten()
+
+    for i, ax in enumerate(axes):
+        ax.axhline(la[i][0], ls='--', c='green')
+        
+    for i, ax in enumerate(axes):
+        ax.axhline(la_2[i][0], ls='--', c='purple')
+        
+    ax.text(0, average_x, name_x, transform=ax.transData)  
+    ax.text(1, average_y, name_y, transform=ax.transData)  
     
-    print(name_x,"is in the following percentile for offensive performance:",average_x)
-    print(name_y, "is in the following percentile for offensive performance:",average_y)
-    
+    print(name_x,"is in the following percentile for defensive performance:",round(average_x,2))
+    print(name_y, "is in the following percentile for defensive performance:",round(average_y,2))
