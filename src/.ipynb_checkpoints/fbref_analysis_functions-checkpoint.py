@@ -1100,5 +1100,5 @@ def compare_offensive_stats(x,y):
     ax.text(0, average_x, name_x, transform=ax.transData)  
     ax.text(1, average_y, name_y, transform=ax.transData)  
     
-    print(name_x,"is in the following percentile for defensive performance:",round(average_x,2))
-    print(name_y, "is in the following percentile for defensive performance:",round(average_y,2))
+    print(name_x,"is in the following percentile for offensive performance:",round(average_x,2))
+    print(name_y, "is in the following percentile for offensive performance:",round(average_y,2))
